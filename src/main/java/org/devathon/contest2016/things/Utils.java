@@ -1,13 +1,17 @@
 package org.devathon.contest2016.things;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class Utils {
 
-    private Utils() {}
+    // Might do static abuse later
 
-    public static void breakRelative(Block block, int around) {
+    public Utils() {}
+
+    public void breakRelative(Block block, int around) {
         for (int x = -around; x <= around; x++) {
             for (int y = -around; y <= around; y++) {
                 for (int z = -around; z <= around; z++) {
@@ -16,6 +20,30 @@ public class Utils {
                     }
                 }
             }
+        }
+    }
+
+    public void broadcast(String message, Type type) {
+        Bukkit.getConsoleSender().sendMessage(color(type.getMessage() + message));
+    }
+
+    public String color(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    private enum Type {
+        NORMAL(""),
+        ERROR("&c[Error] "),
+        WARNING("&e[Warning] ");
+
+        private String message;
+
+        Type(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 }
