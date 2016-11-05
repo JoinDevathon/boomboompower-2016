@@ -1,9 +1,15 @@
-package org.devathon.contest2016.things;
+package org.devathon.contest2016;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class Utils {
 
@@ -19,6 +25,14 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static Collection<? extends Entity> getCows() {
+        List<Entity> cows = new ArrayList<Entity>();
+        for (World world : Bukkit.getWorlds()) {
+            cows.addAll(world.getEntities().stream().filter(entity -> entity.getMetadata(CowListener.meta) != null).collect(java.util.stream.Collectors.toList()));
+        }
+        return cows;
     }
 
     public static void broadcast(String message, Type type) {
