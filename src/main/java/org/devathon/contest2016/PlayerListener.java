@@ -5,13 +5,13 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
@@ -27,24 +27,6 @@ public class PlayerListener implements Listener {
         this.blocks = new ArrayList<>();
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
-
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                for (Block block : blocks) {
-                    for (Entity entity : block.getWorld().getEntities()) {
-                        if (entity.getLocation().distance(block.getLocation()) <= 10D) {
-                            BlockIterator blocksToAdd = new BlockIterator(entity.getLocation(), 0D, 0);
-                            Location blockToAdd;
-                            while(blocksToAdd.hasNext()) {
-                                blockToAdd = blocksToAdd.next().getLocation();
-                                block.getWorld().playEffect(blockToAdd, Effect.COLOURED_DUST, 0);
-                            }
-                        }
-                    }
-                }
-            }
-        }, 0L, 10L);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -52,6 +34,19 @@ public class PlayerListener implements Listener {
         if (blocks.contains(event.getClickedBlock())) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    private void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        blocks.stream().filter(block -> player.getLocation().distance(block.getLocation()) <= 6D).forEach(block -> {
+            BlockIterator iterator = new BlockIterator(player.getLocation());
+            Location location;
+            while (iterator.hasNext()) {
+                location = iterator.next().getLocation();
+                block.getWorld().playEffect(location, Effect.COLOURED_DUST, 0);
+            }
+        });
     }
 
     @EventHandler(priority = EventPriority.HIGH)
