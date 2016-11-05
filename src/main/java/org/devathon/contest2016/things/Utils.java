@@ -7,11 +7,9 @@ import org.bukkit.block.Block;
 
 public class Utils {
 
-    // Might do static abuse later
+    private Utils() {}
 
-    public Utils() {}
-
-    public void breakRelative(Block block, int around) {
+    public static void breakRelative(Block block, int around) {
         for (int x = -around; x <= around; x++) {
             for (int y = -around; y <= around; y++) {
                 for (int z = -around; z <= around; z++) {
@@ -23,15 +21,15 @@ public class Utils {
         }
     }
 
-    public void broadcast(String message, Type type) {
+    public static void broadcast(String message, Type type) {
         Bukkit.getConsoleSender().sendMessage(color(type.getMessage() + message));
     }
 
-    public String color(String message) {
+    public static String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    private enum Type {
+    public enum Type {
         NORMAL(""),
         ERROR("&c[Error] "),
         WARNING("&e[Warning] ");
