@@ -6,13 +6,10 @@ public class DevathonPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Utils.broadcast("&bPlugin loading", Utils.Type.NORMAL);
-        new CowListener(this);
+        new PlayerListener(this);
     }
 
     @Override
-    public void onDisable() {
-        Utils.broadcast("&bPlugin shutting down", Utils.Type.NORMAL);
-    }
+    public void onDisable() {}
 }
 
