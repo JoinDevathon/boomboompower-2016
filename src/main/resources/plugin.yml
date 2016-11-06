@@ -2,5 +2,10 @@ name: Devathon Project
 description: A project for the Devathon contest
 version: 1.0.0
 author: boomboompower
+
 main: org.devathon.contest2016.DevathonPlugin
 
+commands:
+  remove:
+    usage: /<command>
+    description: Remove all turrets
