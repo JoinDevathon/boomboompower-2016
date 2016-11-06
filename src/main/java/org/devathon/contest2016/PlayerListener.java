@@ -12,9 +12,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.devathon.contest2016.inventories.MainInventory;
 import org.devathon.contest2016.utils.CustomLogging;
 
 import java.util.ArrayList;
@@ -24,23 +27,27 @@ public class PlayerListener implements Listener {
 
     private final static List<Block> blocks = new ArrayList<>();
     private final static List<ArmorStand> stands = new ArrayList<>();
+    private Inventory mainInventory;
     private ItemStack[] defaults = new ItemStack[] {
             new ItemStack(Material.BREWING_STAND_ITEM),
             new ItemStack(Material.FENCE)
     };
 
     public PlayerListener(DevathonPlugin plugin) {
+        mainInventory = new MainInventory().getInventory();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
             public void run() {
                 for (ArmorStand stand : stands) {
-                    ArrayList<Location> c = cirle(5, stand.getLocation());
-                    for (Location loc : c) {
-                        stand.getWorld().spigot().playEffect(loc, Effect.HEART, 64, 0, 0.0F, 0.0F, 0.0F, 1.0F, 1, 5);
+                    for (int i = 0; i < 360; i++) {
+                        Location particles = stand.getLocation();
+                        particles.setX(particles.getX() + Math.cos(i) * 5);
+                        particles.setZ(particles.getZ() + Math.cos(i) * 5);
+                        stand.getWorld().spigot().playEffect(particles, Effect.HEART, 64, 0, 0.0F, 0.0F, 0.0F, 1.0F, 1, 5);
                     }
                 }
             }
-        }, 1L, 2L);
+        }, 5L, 5L);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -62,6 +69,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomLogging.actionbar(player, "&eWelcome to the world &6" + player.getName() + "&e !");
         player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(16);
+        player.setLevel(0);
         player.setExp(0);
         player.setHealth(player.getMaxHealth());
         player.getInventory().clear();
@@ -75,10 +83,21 @@ public class PlayerListener implements Listener {
     private void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (blocks.contains(event.getClickedBlock())) {
+            event.setCancelled(true);
             if (event.getClickedBlock().getType() == Material.BREWING_STAND && !player.isSneaking()) {
+                player.openInventory(mainInventory);
             } else {
                 CustomLogging.actionbar(event.getPlayer(), "&c&lYou cannot interact with this block.");
-                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    private void onInventoryInteract(InventoryClickEvent event) {
+        if (event.getInventory() != null && event.getInventory() == mainInventory) {
+            event.setCancelled(true);
+            if (event.getCurrentItem() != null) {
+                ItemStack item = event.getCurrentItem();
             }
         }
     }
@@ -115,11 +134,12 @@ public class PlayerListener implements Listener {
     }
 
     private ArrayList<Location> cirle(double radius, Location block) {
+        int var = 20;
         World world = block.getWorld();
         ArrayList<Location> loc = new ArrayList<>();
-        double math = (Math.PI * 2) / 5;
-        for (int i = 0; i < 5; i++) {
-            loc.add(new Location(world, (block.getX() + .5) + (radius * Math.cos(i * math)), block.getY(), (block.getZ() + .5) + (radius * Math.cos(i * math))));
+        double math = (Math.PI * 2) / var;
+        for (int i = 0; i < var; i++) {
+            loc.add(new Location(world, block.getX() + (radius * Math.cos(i * math)), block.getY(), block.getZ() + .5 + (radius * Math.cos(i * math))));
         }
         return loc;
     }
