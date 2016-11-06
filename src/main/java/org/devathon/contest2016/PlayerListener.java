@@ -94,7 +94,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     private void onInventoryInteract(InventoryClickEvent event) {
-        if (event.getInventory() != null && event.getInventory() == mainInventory) {
+        if (event.getInventory().getTitle().equals(mainInventory.getTitle())) {
             event.setCancelled(true);
             if (event.getCurrentItem() != null) {
                 ItemStack item = event.getCurrentItem();

@@ -1,6 +1,8 @@
 package org.devathon.contest2016.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -14,5 +16,9 @@ public class Items {
         meta.setDisplayName(CustomLogging.color(name));
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    public static void closeAll() {
+        Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
     }
 }
