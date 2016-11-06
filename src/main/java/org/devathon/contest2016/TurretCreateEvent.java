@@ -7,14 +7,20 @@ import org.bukkit.event.HandlerList;
 public class TurretCreateEvent extends Event {
 
     public static HandlerList handlerList = new HandlerList();
-    private Location creationLocation;
+    private Location topBlock;
+    private Location bottomBlock;
 
-    public TurretCreateEvent(Location creationLocation) {
-        this.creationLocation = creationLocation;
+    public TurretCreateEvent(Location topBlock, Location bottomBlock) {
+        this.topBlock = topBlock;
+        this.bottomBlock = bottomBlock;
     }
 
-    public Location getLocation() {
-        return this.creationLocation;
+    public Location getTopBlock() {
+        return this.topBlock;
+    }
+
+    public Location getBottomBlock() {
+        return this.bottomBlock;
     }
 
     @Override
